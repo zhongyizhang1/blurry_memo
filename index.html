@@ -1,0 +1,372 @@
+<!DOCTYPE html> 
+ <html lang="zh-CN" class="dark"> 
+ <head> 
+     <meta charset="UTF-8"> 
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+     <title>blurry_memo — Photography</title> 
+     <!-- Tailwind CSS --> 
+     <script src="https://cdn.tailwindcss.com"></script> 
+     <!-- Google Fonts -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+     <style> 
+         body { 
+             background-color: #000000; 
+             color: #e5e5e5; 
+             font-family: 'Lato', sans-serif;
+         }
+         /* 隐藏右侧滚动条 */ 
+         .no-scrollbar::-webkit-scrollbar { display: none; } 
+         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } 
+     </style> 
+ </head> 
+ <body class="font-sans antialiased bg-black text-neutral-300 min-h-screen flex selection:bg-white selection:text-black"> 
+ 
+     <!-- 左侧固定侧边栏 (Sidebar) --> 
+     <aside class="w-64 h-screen fixed top-0 left-0 p-8 flex flex-col justify-between border-r border-neutral-900 bg-black z-20"> 
+         <div class="space-y-12"> 
+             <!-- 品牌 / 名字 --> 
+             <div> 
+                 <a href="#" class="text-base tracking-widest text-white font-medium">blurry_memo</a> 
+             </div> 
+ 
+             <!-- 摄影分类 --> 
+             <div class="space-y-4"> 
+                 <nav class="flex flex-col space-y-3 text-sm font-light tracking-wide text-neutral-500"> 
+                     <a href="#" onclick="filterCategory('all', event)" class="hover:text-white transition underline underline-offset-4 text-white nav-link" data-category="all">All 全部</a> 
+                     <a href="#" onclick="filterCategory('humanities', event)" class="hover:text-white transition nav-link" data-category="humanities">Humanities 人文</a> 
+                     <a href="#" onclick="filterCategory('nature', event)" class="hover:text-white transition nav-link" data-category="nature">Nature 自然</a> 
+                     <a href="#" onclick="filterCategory('architecture', event)" class="hover:text-white transition nav-link" data-category="architecture">Architecture 建筑</a> 
+                 </nav> 
+             </div> 
+         </div> 
+ 
+         <!-- 链接与留言板按钮 --> 
+         <div class="space-y-6"> 
+             <nav class="flex flex-col space-y-3 text-sm font-light tracking-wide text-neutral-500"> 
+                 <a href="#" onclick="openAboutModal(event)" class="hover:text-white transition">About 关于我</a> 
+                 <a href="https://www.xiaohongshu.com" target="_blank" class="hover:text-white transition">Xiaohongshu 小红书</a> 
+                 <a href="#guestbook" class="hover:text-white transition text-neutral-300">Guestbook 留言版</a> 
+             </nav> 
+         </div> 
+     </aside> 
+ 
+     <!-- 右侧内容区域 (Main Content Area) --> 
+     <main class="ml-64 flex-1 h-screen overflow-y-auto no-scrollbar px-12 py-8 space-y-24 scroll-smooth"> 
+          
+         <!-- 1. 作品画廊区域 (使用 Masonry 瀑布流，保持图片原比例不变形) --> 
+         <section id="gallery" class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6"> 
+              <!-- 照片将通过 JavaScript 动态加载 -->
+         </section> 
+ 
+         <!-- 图片放大模态框 -->
+         <div id="imageModal" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-[100] hidden opacity-0 transition-opacity duration-500 ease-out" onclick="closeModal()">
+             <button class="absolute top-4 right-4 text-white text-4xl hover:text-neutral-300 transition z-[110] focus:outline-none p-2" onclick="closeModal()">&times;</button>
+             
+             <!-- 左右切换按钮 -->
+             <button id="prevBtn" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-5xl hover:text-neutral-300 transition z-[110] focus:outline-none p-4" onclick="event.stopPropagation(); navigateImage(-1)">&#10094;</button>
+             <button id="nextBtn" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-5xl hover:text-neutral-300 transition z-[110] focus:outline-none p-4" onclick="event.stopPropagation(); navigateImage(1)">&#10095;</button>
+             
+             <div class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+                 <img id="modalImage" src="" alt="Full size" class="max-w-full max-h-full object-contain transform scale-95 transition-all duration-500 ease-out cursor-zoom-in" onclick="event.stopPropagation(); toggleZoom()">
+             </div>
+             <!-- 缩放提示 -->
+             <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-neutral-400 text-xs tracking-wider pointer-events-none font-light z-[105]">
+                 点击图片缩放 · 滚轮缩放 · 左右键切换 · ESC关闭
+             </div>
+         </div>
+
+         <!-- 关于我模态框 -->
+         <div id="aboutModal" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-[90] hidden items-center justify-center p-4 opacity-0 transition-opacity duration-500 ease-out" onclick="closeAboutModal()">
+             <button class="absolute top-6 right-6 text-white text-5xl hover:text-neutral-300 transition z-[95] focus:outline-none" onclick="closeAboutModal()">&times;</button>
+             <div class="max-w-md text-center" onclick="event.stopPropagation()">
+                 <p class="text-white text-xl font-light tracking-wide">这个人很懒，什么都没留下。</p>
+             </div>
+         </div>
+
+         <!-- 2. 留言板模块 (Guestbook Section) --> 
+         <section id="guestbook" class="max-w-xl border-t border-neutral-900 pt-16 pb-24 space-y-8"> 
+             <div class="space-y-1"> 
+                 <p class="text-sm uppercase tracking-widest text-neutral-500 font-light">GUESTBOOK / 留言版</p> 
+                 <h2 class="text-xl font-light text-white tracking-wide">Leave a Message</h2> 
+             </div> 
+ 
+             <!-- 留言提交表单 --> 
+             <form id="commentForm" class="space-y-4" onsubmit="handleComment(event)"> 
+                 <div class="grid grid-cols-2 gap-4"> 
+                     <input type="text" id="author" placeholder="你的名字 *" required class="bg-neutral-950 border border-neutral-800 p-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-400 transition font-light"> 
+                     <input type="email" id="email" placeholder="邮箱 (不会公开)" class="bg-neutral-950 border border-neutral-800 p-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-400 transition font-light"> 
+                 </div> 
+                 <textarea id="content" rows="4" placeholder="写下你的留言或交流意向..." required class="w-full bg-neutral-950 border border-neutral-800 p-3 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-400 transition font-light"></textarea> 
+                 <button type="submit" class="bg-white text-black px-6 py-2.5 text-sm tracking-widest uppercase hover:bg-neutral-200 transition font-light">发送留言</button> 
+             </form> 
+ 
+             <!-- 留言列表 --> 
+             <div class="space-y-4 pt-6"> 
+                 <p class="text-sm uppercase tracking-wider text-neutral-500 font-light">Recent Messages</p> 
+                 <div id="commentsList" class="space-y-4"> 
+                     <!-- 留言将通过 JavaScript 动态添加 -->
+                 </div> 
+             </div> 
+         </section> 
+ 
+     </main> 
+ 
+     <script> 
+         let currentCategory = 'all';
+         let photosData = null;
+         let isZoomed = false;
+         let currentScale = 1;
+         let currentImageIndex = 0;
+         let currentPhotos = [];
+         let animationDuration = 500; // 动画时长改为500ms
+
+         // 加载照片配置
+         async function loadPhotos() {
+             try {
+                 const response = await fetch('photos.json');
+                 photosData = await response.json();
+                 renderGallery(currentCategory);
+             } catch (error) {
+                 console.error('加载照片配置失败:', error);
+             }
+         }
+
+         // 渲染画廊
+         function renderGallery(category) {
+             const gallery = document.getElementById('gallery');
+             gallery.innerHTML = '';
+
+             const filteredPhotos = category === 'all' 
+                 ? photosData.photos 
+                 : photosData.photos.filter(photo => photo.category === category);
+
+             filteredPhotos.forEach((photo, index) => {
+                 const photoCard = document.createElement('div');
+                 photoCard.className = 'break-inside-avoid bg-neutral-900 overflow-hidden group cursor-pointer relative';
+                 photoCard.innerHTML = `
+                     <img src="images/${photo.filename}"  
+                          class="w-full h-auto block transition duration-500 group-hover:scale-105"  
+                          alt="${photo.title}"
+                          onclick="openModal('images/${photo.filename}', ${index})">
+                 `;
+                 gallery.appendChild(photoCard);
+             });
+         }
+
+         // 分类切换
+         function filterCategory(category, event) {
+             event.preventDefault();
+             currentCategory = category;
+             
+             // 更新导航样式
+             document.querySelectorAll('.nav-link').forEach(link => {
+                 link.classList.remove('underline', 'underline-offset-4', 'text-white');
+                 if (link.dataset.category === category) {
+                     link.classList.add('underline', 'underline-offset-4', 'text-white');
+                 }
+             });
+
+             renderGallery(category);
+         }
+
+         // 打开图片模态框（带平滑动画）
+         function openModal(imageSrc, index) {
+             const modal = document.getElementById('imageModal');
+             const modalImage = document.getElementById('modalImage');
+             
+             // 获取当前分类下的照片列表
+             currentPhotos = currentCategory === 'all' 
+                 ? photosData.photos 
+                 : photosData.photos.filter(photo => photo.category === currentCategory);
+             
+             // 使用传入的索引或查找
+             currentImageIndex = index !== undefined ? index : currentPhotos.findIndex(photo => `images/${photo.filename}` === imageSrc);
+             
+             modalImage.src = imageSrc;
+             modal.classList.remove('hidden');
+             modal.classList.add('flex');
+            
+             // 重置缩放状态
+             isZoomed = false;
+             currentScale = 1;
+             modalImage.style.transform = 'scale(1)';
+             modalImage.classList.remove('cursor-zoom-out');
+             modalImage.classList.add('cursor-zoom-in');
+            
+             // 添加滚轮缩放事件
+             modalImage.addEventListener('wheel', handleWheel);
+            
+             // 触发重绘以启用过渡动画
+             requestAnimationFrame(() => {
+                 modal.classList.remove('opacity-0');
+                 modalImage.classList.remove('scale-95');
+                 modalImage.classList.add('scale-100');
+             });
+            
+             // 禁用背景滚动
+             document.body.style.overflow = 'hidden';
+         }
+
+         // 关闭图片模态框（带平滑动画）
+         function closeModal() {
+             const modal = document.getElementById('imageModal');
+             const modalImage = document.getElementById('modalImage');
+             
+             // 移除滚轮事件监听
+             modalImage.removeEventListener('wheel', handleWheel);
+             
+             modal.classList.add('opacity-0');
+             modalImage.classList.remove('scale-100');
+             modalImage.classList.add('scale-95');
+             
+             // 等待动画完成后隐藏
+             setTimeout(() => {
+                 modal.classList.add('hidden');
+                 modal.classList.remove('flex');
+                 modalImage.src = '';
+                 modalImage.style.transform = 'scale(1)';
+                 // 恢复背景滚动
+                 document.body.style.overflow = '';
+             }, 500);
+         }
+
+         // 切换缩放
+         function toggleZoom() {
+             const modalImage = document.getElementById('modalImage');
+             isZoomed = !isZoomed;
+             
+             if (isZoomed) {
+                 currentScale = 2;
+                 modalImage.style.transform = 'scale(2)';
+                 modalImage.classList.remove('cursor-zoom-in');
+                 modalImage.classList.add('cursor-zoom-out');
+            } else {
+                currentScale = 1;
+                modalImage.style.transform = 'scale(1)';
+                modalImage.classList.remove('cursor-zoom-out');
+                modalImage.classList.add('cursor-zoom-in');
+            }
+        }
+
+        // 滚轮缩放
+        function handleWheel(e) {
+            e.preventDefault();
+            const modalImage = document.getElementById('modalImage');
+            const delta = e.deltaY > 0 ? -0.5 : 0.5;
+            currentScale = Math.max(0.5, Math.min(5, currentScale + delta));
+            modalImage.style.transform = `scale(${currentScale})`;
+            
+            // 更新光标状态
+            if (currentScale > 1) {
+                modalImage.classList.remove('cursor-zoom-in');
+                modalImage.classList.add('cursor-zoom-out');
+                isZoomed = true;
+            } else {
+                modalImage.classList.remove('cursor-zoom-out');
+                modalImage.classList.add('cursor-zoom-in');
+                isZoomed = false;
+            }
+        }
+
+        // 图片导航
+        function navigateImage(direction) {
+            if (currentPhotos.length === 0) return;
+            
+            currentImageIndex += direction;
+            
+            // 循环导航
+            if (currentImageIndex < 0) {
+                currentImageIndex = currentPhotos.length - 1;
+            } else if (currentImageIndex >= currentPhotos.length) {
+                currentImageIndex = 0;
+            }
+            
+            const modalImage = document.getElementById('modalImage');
+            
+            // 添加淡出效果
+            modalImage.style.opacity = '0';
+            modalImage.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                modalImage.src = `images/${currentPhotos[currentImageIndex].filename}`;
+                // 重置缩放
+                isZoomed = false;
+                currentScale = 1;
+                modalImage.style.transform = 'scale(1)';
+                modalImage.classList.remove('cursor-zoom-out');
+                modalImage.classList.add('cursor-zoom-in');
+                
+                // 淡入效果
+                requestAnimationFrame(() => {
+                    modalImage.style.opacity = '1';
+                    modalImage.style.transform = 'scale(1)';
+                });
+            }, 250);
+        }
+
+         // 留言功能
+         function handleComment(e) { 
+             e.preventDefault(); 
+             const author = document.getElementById('author').value; 
+             const content = document.getElementById('content').value; 
+             const date = new Date().toISOString().split('T')[0]; 
+ 
+             const newComment = document.createElement('div'); 
+             newComment.className = 'bg-neutral-950/60 p-4 border border-neutral-900 space-y-1.5'; 
+             newComment.innerHTML = ` 
+                 <div class="flex justify-between text-[10px] text-neutral-500 tracking-wider"> 
+                     <span class="text-neutral-300 font-light">${author}</span> 
+                     <span>${date}</span> 
+                 </div> 
+                 <p class="text-xs text-neutral-400 font-light leading-relaxed">${content}</p> 
+             `; 
+ 
+             document.getElementById('commentsList').prepend(newComment); 
+             document.getElementById('commentForm').reset(); 
+         }
+
+         // 键盘事件 - ESC关闭模态框，左右键切换图片
+         document.addEventListener('keydown', function(e) {
+             if (e.key === 'Escape') {
+                 closeModal();
+                 closeAboutModal();
+             } else if (e.key === 'ArrowLeft') {
+                 navigateImage(-1);
+             } else if (e.key === 'ArrowRight') {
+                 navigateImage(1);
+             }
+         });
+
+         // 打开关于我模态框
+         function openAboutModal(event) {
+             event.preventDefault();
+             const modal = document.getElementById('aboutModal');
+             modal.classList.remove('hidden');
+             modal.classList.add('flex');
+             
+             requestAnimationFrame(() => {
+                 modal.classList.remove('opacity-0');
+             });
+             
+             document.body.style.overflow = 'hidden';
+         }
+
+         // 关闭关于我模态框
+         function closeAboutModal() {
+             const modal = document.getElementById('aboutModal');
+             modal.classList.add('opacity-0');
+             
+             setTimeout(() => {
+                 modal.classList.add('hidden');
+                 modal.classList.remove('flex');
+                 document.body.style.overflow = '';
+             }, 500);
+         }
+
+         // 页面加载时初始化
+         document.addEventListener('DOMContentLoaded', loadPhotos);
+     </script> 
+ </body> 
+ </html>
