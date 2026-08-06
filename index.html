@@ -2,7 +2,7 @@
 <html lang="en" class="dark"> 
 <head> 
     <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <title>blurry_memo — Photography</title> 
     <!-- Tailwind CSS --> 
     <script src="https://cdn.tailwindcss.com"></script> 
@@ -25,17 +25,22 @@
         
         /* Bold White Title */
         .cargo-title {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1.05;
             color: #ffffff;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
         }
+        @media (min-width: 768px) {
+            .cargo-title {
+                font-size: 32px;
+            }
+        }
 
         /* Bold White Sidebar Menu Items */
         .cargo-menu-item {
-            font-size: 24px !important;
+            font-size: 22px !important;
             font-weight: 600 !important;
             letter-spacing: -0.01em !important;
             line-height: 1.15 !important;
@@ -46,6 +51,12 @@
             margin: 0;
             padding: 0;
         }
+        @media (min-width: 768px) {
+            .cargo-menu-item {
+                font-size: 24px !important;
+            }
+        }
+
         .cargo-menu-item:hover {
             opacity: 0.7;
         }
@@ -57,13 +68,18 @@
 
         /* Bold White Copyright Text */
         .cargo-copyright {
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1.25;
             color: #ffffff;
             font-weight: 500;
             letter-spacing: -0.01em;
             opacity: 0.95;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+        }
+        @media (min-width: 768px) {
+            .cargo-copyright {
+                font-size: 13px;
+            }
         }
 
         /* Background image smooth transition for gallery mode */
@@ -74,7 +90,7 @@
             transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
         }
 
-        /* Gallery Active State: Soft Frosted Dark Blur (Higher Transparency & Brighter Background) */
+        /* Gallery Active State: Soft Frosted Dark Blur */
         body.gallery-active #coverImg {
             filter: blur(12px) brightness(0.6);
             transform: scale(1.03);
@@ -87,7 +103,7 @@
 </head> 
 <body class="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black"> 
 
-    <!-- Fullscreen Background Photo (P1023252.JPEG) -->
+    <!-- Fullscreen Background Photo (IMG_4157 / P1011894 2) -->
     <img id="coverImg" src="images/cover.jpg" alt="Cover" class="fixed inset-0 w-full h-full object-cover z-0">
     
     <!-- 40% Soft Dark Overlay for Crisp Left Menu Contrast -->
@@ -96,8 +112,39 @@
     <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
     <div id="bgOverlay" class="fixed inset-0 bg-black/50 z-[5] opacity-0 pointer-events-none"></div>
 
-    <!-- Fixed Left Panel (Cargo.site Bold White Typography Stack) -->
-    <aside class="fixed top-8 left-8 z-30 flex flex-col justify-between h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
+    <!-- 1. Mobile Top Navigation Bar (Only visible on mobile screens < md) -->
+    <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-black/50 backdrop-blur-md px-5 py-4 flex justify-between items-center border-b border-white/10 pointer-events-auto">
+        <a href="#" onclick="showHome(event)" class="cargo-title text-2xl font-bold tracking-tight text-white drop-shadow">blurry_memo</a>
+        <button onclick="toggleMobileMenu(event)" class="text-white p-1 focus:outline-none" aria-label="Toggle Menu">
+            <svg class="w-7 h-7 drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- 2. Mobile Fullscreen Slide-out Menu Overlay (Only visible on mobile screens < md) -->
+    <div id="mobileMenuOverlay" class="md:hidden fixed inset-0 bg-black/95 backdrop-blur-2xl z-50 hidden flex-col justify-between p-8 pointer-events-auto transition-opacity duration-300">
+        <div class="flex justify-between items-center pb-6 border-b border-white/10">
+            <a href="#" onclick="showHome(event); toggleMobileMenu(event);" class="cargo-title text-2xl font-bold">blurry_memo</a>
+            <button onclick="toggleMobileMenu(event)" class="text-white text-3xl font-light focus:outline-none p-1">&times;</button>
+        </div>
+
+        <nav class="flex flex-col space-y-4 my-auto py-8">
+            <a href="#" onclick="selectMobileCategory('all', event)" class="cargo-menu-item text-2xl font-semibold">All Works</a>
+            <a href="#" onclick="selectMobileCategory('humanities', event)" class="cargo-menu-item text-2xl font-semibold">Humanities</a>
+            <a href="#" onclick="selectMobileCategory('architecture', event)" class="cargo-menu-item text-2xl font-semibold">Architecture</a>
+            <a href="#" onclick="selectMobileCategory('nature', event)" class="cargo-menu-item text-2xl font-semibold">Nature</a>
+            <a href="#" onclick="selectMobileAbout(event)" class="cargo-menu-item text-2xl font-semibold">About me</a>
+            <a href="#" onclick="selectMobileGuestbook(event)" class="cargo-menu-item text-2xl font-semibold">Guestbook</a>
+        </nav>
+
+        <div class="cargo-copyright pt-6 border-t border-white/10 text-xs">
+            All content copyright the artist. No commercial use without express written permission.
+        </div>
+    </div>
+
+    <!-- 3. Desktop Fixed Left Panel (Only visible on desktop screens >= md) -->
+    <aside class="hidden md:flex fixed top-8 left-8 z-30 flex-col justify-between h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
         <!-- Top Left Stack: Brand Title + Menu List -->
         <div class="space-y-6">
             <!-- Brand Title -->
@@ -122,17 +169,17 @@
         </div>
     </aside>
 
-    <!-- Overlay Gallery Area -->
-    <main id="mainContent" class="relative z-10 ml-[320px] min-h-screen px-8 py-8 transition-all duration-500 opacity-0 pointer-events-none">
+    <!-- 4. Overlay Gallery Area (Responsive: full width on mobile, offset on desktop) -->
+    <main id="mainContent" class="relative z-10 ml-0 md:ml-[320px] min-h-screen px-4 md:px-8 pt-20 md:pt-8 pb-12 transition-all duration-500 opacity-0 pointer-events-none">
         
         <!-- Gallery Header & Close Button -->
         <div class="flex justify-between items-center mb-6 pt-2">
-            <h2 id="galleryTitle" class="text-xl font-light tracking-wide text-white drop-shadow">All Works</h2>
+            <h2 id="galleryTitle" class="text-lg md:text-xl font-light tracking-wide text-white drop-shadow">All Works</h2>
             <button onclick="showHome(event)" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white bg-black/70 backdrop-blur-md px-3.5 py-1.5 border border-white/20">Close Gallery &times;</button>
         </div>
 
-        <!-- Photo Gallery (Masonry Grid - Borderless Seamless Photos) -->
-        <section id="gallery" class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+        <!-- Photo Gallery (Responsive Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop) -->
+        <section id="gallery" class="columns-1 md:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
             <!-- Photos dynamically loaded via JavaScript -->
         </section>
 
@@ -140,24 +187,24 @@
 
     <!-- Fullscreen Image Lightbox Modal -->
     <div id="imageModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] hidden opacity-0 transition-opacity duration-300 ease-out" onclick="closeModal()">
-        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="closeModal()">&times;</button>
+        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white text-3xl md:text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none p-2 font-light" onclick="closeModal()">&times;</button>
         
         <!-- Navigation Buttons -->
-        <button id="prevBtn" class="absolute left-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="event.stopPropagation(); navigateImage(-1)">&#10094;</button>
-        <button id="nextBtn" class="absolute right-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="event.stopPropagation(); navigateImage(1)">&#10095;</button>
+        <button id="prevBtn" class="absolute left-2 md:left-6 top-1/2 transform -translate-y-1/2 text-white text-3xl md:text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none p-3 font-light" onclick="event.stopPropagation(); navigateImage(-1)">&#10094;</button>
+        <button id="nextBtn" class="absolute right-2 md:right-6 top-1/2 transform -translate-y-1/2 text-white text-3xl md:text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none p-3 font-light" onclick="event.stopPropagation(); navigateImage(1)">&#10095;</button>
         
-        <div class="relative w-full h-screen flex items-center justify-center overflow-hidden">
-            <img id="modalImage" src="" alt="Full size" class="max-w-full max-h-full object-contain transform scale-95 transition-all duration-300 ease-out cursor-zoom-in" onclick="event.stopPropagation(); toggleZoom()">
+        <div class="relative w-full h-screen flex items-center justify-center overflow-hidden p-4">
+            <img id="modalImage" src="" alt="Full size" class="max-w-[94vw] max-h-[85vh] md:max-w-full md:max-h-full object-contain transform scale-95 transition-all duration-300 ease-out cursor-zoom-in" onclick="event.stopPropagation(); toggleZoom()">
         </div>
         <!-- Interaction Hint -->
-        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-neutral-400 text-xs uppercase tracking-[0.2em] pointer-events-none font-normal z-[105]">
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-neutral-400 text-xs uppercase tracking-[0.2em] pointer-events-none font-normal z-[105] text-center px-4">
             Click / Scroll to Zoom · ESC to Close
         </div>
     </div>
 
     <!-- About me Modal -->
-    <div id="aboutModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[90] hidden items-center justify-center p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeAboutModal()">
-        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light" onclick="closeAboutModal()">&times;</button>
+    <div id="aboutModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[90] hidden items-center justify-center p-4 md:p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeAboutModal()">
+        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light p-2" onclick="closeAboutModal()">&times;</button>
         <div class="max-w-md w-full bg-transparent p-6 space-y-4 text-white" onclick="event.stopPropagation()">
             <h3 class="cargo-title text-white">About me</h3>
             <p class="text-base font-light leading-relaxed text-neutral-200 tracking-wide">
@@ -170,8 +217,8 @@
     </div>
 
     <!-- Guestbook Modal Dialog -->
-    <div id="guestbookModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[90] hidden items-center justify-center p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeGuestbookModal()">
-        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light" onclick="closeGuestbookModal()">&times;</button>
+    <div id="guestbookModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[90] hidden items-center justify-center p-4 md:p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeGuestbookModal()">
+        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light p-2" onclick="closeGuestbookModal()">&times;</button>
         <div class="max-w-md w-full bg-transparent p-6 space-y-6 text-white" onclick="event.stopPropagation()">
             <div class="space-y-1">
                 <h3 class="cargo-title text-white">Guestbook</h3>
@@ -180,12 +227,12 @@
 
             <!-- Message Form -->
             <form id="commentForm" class="space-y-4" onsubmit="handleComment(event)">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <input type="text" id="author" placeholder="Name *" required class="bg-white/10 backdrop-blur-md border-b border-white/30 p-2.5 text-xs text-white placeholder-white/60 focus:outline-none focus:border-white transition font-normal rounded-none">
                     <input type="email" id="email" placeholder="Email" class="bg-white/10 backdrop-blur-md border-b border-white/30 p-2.5 text-xs text-white placeholder-white/60 focus:outline-none focus:border-white transition font-normal rounded-none">
                 </div>
                 <textarea id="content" rows="3" placeholder="Message..." required class="w-full bg-white/10 backdrop-blur-md border-b border-white/30 p-2.5 text-xs text-white placeholder-white/60 focus:outline-none focus:border-white transition font-normal rounded-none"></textarea>
-                <button type="submit" class="bg-white text-black px-6 py-2 text-xs uppercase tracking-wider hover:bg-neutral-200 transition font-medium">Send</button>
+                <button type="submit" class="bg-white text-black px-6 py-2 text-xs uppercase tracking-wider hover:bg-neutral-200 transition font-medium w-full sm:w-auto">Send</button>
             </form>
 
             <!-- Message List -->
@@ -233,6 +280,34 @@
         let currentImageIndex = 0;
         let currentPhotos = [];
 
+        // Mobile menu toggle
+        function toggleMobileMenu(event) {
+            if (event) event.preventDefault();
+            const menu = document.getElementById('mobileMenuOverlay');
+            if (menu) {
+                menu.classList.toggle('hidden');
+                menu.classList.toggle('flex');
+            }
+        }
+
+        function selectMobileCategory(category, event) {
+            if (event) event.preventDefault();
+            toggleMobileMenu();
+            openGallery(category, event);
+        }
+
+        function selectMobileAbout(event) {
+            if (event) event.preventDefault();
+            toggleMobileMenu();
+            openAboutModal(event);
+        }
+
+        function selectMobileGuestbook(event) {
+            if (event) event.preventDefault();
+            toggleMobileMenu();
+            openGuestbookModal(event);
+        }
+
         // Return to clean homepage cover
         function showHome(event) {
             if (event) event.preventDefault();
@@ -261,6 +336,7 @@
 
             document.body.classList.add('gallery-active');
             mainContent.classList.remove('opacity-0', 'pointer-events-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Load photo settings
@@ -323,7 +399,7 @@
             renderGallery(category);
         }
 
-        // Open modal (Fixed category variable bug so clicking any category photo opens lightbox)
+        // Open modal
         function openModal(imageSrc, index) {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
