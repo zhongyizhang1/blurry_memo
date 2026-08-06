@@ -82,8 +82,9 @@
             }
         }
 
-        /* Background image smooth transition for gallery mode */
-        #coverImg {
+        /* Background image smooth transition for gallery mode (Desktop & Mobile) */
+        #coverImgDesktop,
+        #coverImgMobile {
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
         }
         #bgOverlay {
@@ -91,7 +92,8 @@
         }
 
         /* Gallery Active State: Soft Frosted Dark Blur */
-        body.gallery-active #coverImg {
+        body.gallery-active #coverImgDesktop,
+        body.gallery-active #coverImgMobile {
             filter: blur(12px) brightness(0.6);
             transform: scale(1.03);
         }
@@ -103,8 +105,11 @@
 </head> 
 <body class="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black"> 
 
-    <!-- Fullscreen Background Photo (IMG_4157 / P1011894 2) -->
-    <img id="coverImg" src="images/cover.jpg" alt="Cover" class="fixed inset-0 w-full h-full object-cover z-0">
+    <!-- Fullscreen Desktop Cover Photo (>= md) -->
+    <img id="coverImgDesktop" src="images/cover.jpg" alt="Desktop Cover" class="hidden md:block fixed inset-0 w-full h-full object-cover z-0">
+
+    <!-- Fullscreen Mobile Cover Photo (< md: P1000773.jpg Vertical Photo) -->
+    <img id="coverImgMobile" src="images/humanities/P1000773.jpg" alt="Mobile Cover" class="block md:hidden fixed inset-0 w-full h-full object-cover z-0">
     
     <!-- 40% Soft Dark Overlay for Crisp Left Menu Contrast -->
     <div id="coverOverlay" class="fixed inset-0 z-[1] bg-black/40 pointer-events-none transition-opacity duration-500"></div>
