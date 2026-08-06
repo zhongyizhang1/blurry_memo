@@ -9,7 +9,7 @@
     <!-- Google Fonts: Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         body { 
             background-color: #000000; 
@@ -23,55 +23,47 @@
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } 
         
+        /* Bold White Title */
         .cargo-title {
             font-size: 32px;
-            font-weight: 500;
+            font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1.05;
-            color: #000000;
-            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.4);
-            transition: color 0.4s ease;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
         }
 
-        /* Black text for sidebar menu on cover homepage */
+        /* Bold White Sidebar Menu Items */
         .cargo-menu-item {
             font-size: 24px !important;
-            font-weight: 400 !important;
+            font-weight: 600 !important;
             letter-spacing: -0.01em !important;
             line-height: 1.15 !important;
-            color: #000000 !important;
-            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.4);
-            transition: opacity 0.2s ease, color 0.4s ease;
+            color: #ffffff !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+            transition: opacity 0.2s ease;
             display: block;
             margin: 0;
             padding: 0;
         }
         .cargo-menu-item:hover {
-            opacity: 0.6;
+            opacity: 0.7;
         }
         .cargo-menu-item.active {
-            font-weight: 500 !important;
+            font-weight: 700 !important;
             text-decoration: underline;
             text-underline-offset: 4px;
         }
 
+        /* Bold White Copyright Text */
         .cargo-copyright {
             font-size: 13px;
             line-height: 1.25;
-            color: #000000;
-            font-weight: 300;
+            color: #ffffff;
+            font-weight: 500;
             letter-spacing: -0.01em;
-            opacity: 0.9;
-            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.4);
-            transition: color 0.4s ease;
-        }
-
-        /* When gallery/modal active (dark background), sidebar text transitions to white */
-        body.gallery-active .cargo-title,
-        body.gallery-active .cargo-menu-item,
-        body.gallery-active .cargo-copyright {
-            color: #ffffff !important;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+            opacity: 0.95;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
         }
 
         /* Background image smooth transition for gallery mode */
@@ -82,26 +74,29 @@
             transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
         }
 
-        /* Gallery Active State: Darkened & Heavily Blurred Background */
+        /* Gallery Active State: Soft Frosted Dark Blur (Higher Transparency & Brighter Background) */
         body.gallery-active #coverImg {
-            filter: blur(16px) brightness(0.35);
-            transform: scale(1.05);
+            filter: blur(12px) brightness(0.6);
+            transform: scale(1.03);
         }
         body.gallery-active #bgOverlay {
-            opacity: 0.85;
-            backdrop-filter: blur(20px);
+            opacity: 0.5;
+            backdrop-filter: blur(12px);
         }
     </style> 
 </head> 
 <body class="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black"> 
 
-    <!-- Fullscreen Background Photo (DSC06609.JPG) -->
+    <!-- Fullscreen Background Photo (P1023252.JPEG) -->
     <img id="coverImg" src="images/cover.jpg" alt="Cover" class="fixed inset-0 w-full h-full object-cover z-0">
     
-    <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
-    <div id="bgOverlay" class="fixed inset-0 bg-black/70 z-[5] opacity-0 pointer-events-none"></div>
+    <!-- 40% Soft Dark Overlay for Crisp Left Menu Contrast -->
+    <div id="coverOverlay" class="fixed inset-0 z-[1] bg-black/40 pointer-events-none transition-opacity duration-500"></div>
 
-    <!-- Fixed Left Panel (Cargo.site Black Typography Stack) -->
+    <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
+    <div id="bgOverlay" class="fixed inset-0 bg-black/50 z-[5] opacity-0 pointer-events-none"></div>
+
+    <!-- Fixed Left Panel (Cargo.site Bold White Typography Stack) -->
     <aside class="fixed top-8 left-8 z-30 flex flex-col justify-between h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
         <!-- Top Left Stack: Brand Title + Menu List -->
         <div class="space-y-6">
@@ -293,7 +288,7 @@
 
             if (filteredPhotos.length === 0) {
                 gallery.innerHTML = `
-                    <div class="col-span-full py-16 text-center text-neutral-400 font-light">
+                    <div class="col-span-full py-16 text-center text-neutral-300 font-light">
                         No photos in ${category} yet.
                     </div>
                 `;
@@ -328,14 +323,14 @@
             renderGallery(category);
         }
 
-        // Open modal
+        // Open modal (Fixed category variable bug so clicking any category photo opens lightbox)
         function openModal(imageSrc, index) {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
             
             currentPhotos = currentCategory === 'all' 
                 ? photosData.photos 
-                : photosData.photos.filter(photo => photo.category === category);
+                : photosData.photos.filter(photo => photo.category === currentCategory);
             
             currentImageIndex = index !== undefined ? index : currentPhotos.findIndex(photo => `images/${photo.filename}` === imageSrc);
             
