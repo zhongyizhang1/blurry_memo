@@ -82,8 +82,9 @@
     }
   ],
   "categories": {
-    "all": "All",
+    "all": "All Works",
     "humanities": "Humanities",
-    "architecture": "Architecture"
+    "architecture": "Architecture",
+    "nature": "Nature"
   }
 }
