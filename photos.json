@@ -3,88 +3,88 @@
     {
       "filename": "humanities/P1000773.jpg",
       "category": "humanities",
-      "title": "人文纪实 1"
+      "title": "Humanities I"
     },
     {
       "filename": "humanities/P1011308_lab.JPG",
       "category": "humanities",
-      "title": "人文纪实 2"
+      "title": "Humanities II"
     },
     {
       "filename": "humanities/P1012376.JPG",
       "category": "humanities",
-      "title": "人文纪实 3"
+      "title": "Humanities III"
     },
     {
       "filename": "humanities/P1023070.JPG",
       "category": "humanities",
-      "title": "人文纪实 4"
+      "title": "Humanities IV"
     },
     {
       "filename": "humanities/P1023138.jpg",
       "category": "humanities",
-      "title": "人文纪实 5"
+      "title": "Humanities V"
     },
     {
       "filename": "humanities/P1023198.JPG",
       "category": "humanities",
-      "title": "人文纪实 6"
+      "title": "Humanities VI"
     },
     {
       "filename": "humanities/P1033950.jpg",
       "category": "humanities",
-      "title": "人文纪实 7"
+      "title": "Humanities VII"
     },
     {
       "filename": "humanities/P1044592.jpg",
       "category": "humanities",
-      "title": "人文纪实 8"
+      "title": "Humanities VIII"
     },
     {
       "filename": "architecture/P1011740.jpg",
       "category": "architecture",
-      "title": "建筑摄影 1"
+      "title": "Architecture I"
     },
     {
       "filename": "architecture/P1011741.jpg",
       "category": "architecture",
-      "title": "建筑摄影 2"
+      "title": "Architecture II"
     },
     {
       "filename": "architecture/P1012040.jpg",
       "category": "architecture",
-      "title": "建筑摄影 3"
+      "title": "Architecture III"
     },
     {
       "filename": "architecture/P1023389.jpg",
       "category": "architecture",
-      "title": "建筑摄影 4"
+      "title": "Architecture IV"
     },
     {
       "filename": "architecture/P1023448.JPEG",
       "category": "architecture",
-      "title": "建筑摄影 5"
+      "title": "Architecture V"
     },
     {
       "filename": "architecture/P1033481.jpg",
       "category": "architecture",
-      "title": "建筑摄影 6"
+      "title": "Architecture VI"
     },
     {
       "filename": "architecture/P1033802.JPG",
       "category": "architecture",
-      "title": "建筑摄影 7"
+      "title": "Architecture VII"
     },
     {
       "filename": "architecture/P1034014.jpg",
       "category": "architecture",
-      "title": "建筑摄影 8"
+      "title": "Architecture VIII"
     }
   ],
   "categories": {
-    "all": "All 全部",
-    "architecture": "Architecture 建筑",
-    "humanities": "Humanities 人文",
-    "nature": "Nature 自然"
+    "all": "All",
+    "architecture": "Architecture",
+    "humanities": "Humanities",
+    "nature": "Nature"
   }
 }
