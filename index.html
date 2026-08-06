@@ -6,215 +6,273 @@
     <title>blurry_memo — Photography</title> 
     <!-- Tailwind CSS --> 
     <script src="https://cdn.tailwindcss.com"></script> 
-    <!-- Google Fonts: Cormorant Garamond -->
+    <!-- Google Fonts: Inter (Exact Cargo.site Helvetica/Inter typography) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style> 
         body { 
             background-color: #000000; 
-            color: #e5e5e5; 
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.15rem;
-            line-height: 1.6;
-        }
-        .font-sans-clean {
-            font-family: 'Montserrat', sans-serif;
+            color: #ffffff; 
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.2;
+            -webkit-font-smoothing: antialiased;
         }
         /* Hide scrollbars */ 
         .no-scrollbar::-webkit-scrollbar { display: none; } 
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } 
+        
+        .cargo-title {
+            font-size: 32px;
+            font-weight: 400;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* 100% Uniform font size, weight, line-height & letter spacing across all menu items */
+        .cargo-menu-item {
+            font-size: 24px !important;
+            font-weight: 400 !important;
+            letter-spacing: -0.02em !important;
+            line-height: 1.15 !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+            transition: opacity 0.2s ease;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+        .cargo-menu-item:hover {
+            opacity: 0.6;
+        }
+        .cargo-menu-item.active {
+            font-weight: 500 !important;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .cargo-copyright {
+            font-size: 13px;
+            line-height: 1.25;
+            color: #ffffff;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            opacity: 0.9;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Background image smooth transition for gallery mode */
+        #coverImg {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+        }
+        #bgOverlay {
+            transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
+        }
+
+        /* Gallery Active State: Darkened & Heavily Blurred Background */
+        body.gallery-active #coverImg {
+            filter: blur(16px) brightness(0.35);
+            transform: scale(1.05);
+        }
+        body.gallery-active #bgOverlay {
+            opacity: 0.85;
+            backdrop-filter: blur(20px);
+        }
     </style> 
 </head> 
-<body class="antialiased bg-black text-neutral-300 min-h-screen flex selection:bg-white selection:text-black"> 
+<body class="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black"> 
 
-    <!-- High-End Landing Cover Screen -->
-    <div id="landingScreen" class="fixed inset-0 z-50 flex flex-col justify-between p-10 md:p-16 transition-all duration-1000 ease-in-out bg-black">
-        <!-- Fullscreen Cover Photo -->
-        <img src="images/humanities/P1023198.JPG" alt="Cover" class="absolute inset-0 w-full h-full object-cover opacity-50 scale-100 transition-transform duration-10000 ease-out" id="landingBg">
-        
-        <!-- Dark Frosted Overlay / Backdrop Blur -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/70 backdrop-blur-[3px]"></div>
-        
-        <!-- Interactive Header Area -->
-        <div class="relative z-10 flex justify-between items-start">
-            <div class="space-y-1">
-                <h1 class="text-4xl md:text-5xl font-light tracking-widest text-white italic">blurry_memo</h1>
-                <p class="text-xs md:text-sm tracking-[0.3em] uppercase text-neutral-400 font-sans-clean font-light">Photography & Visual Archives</p>
-            </div>
-            <div class="hidden sm:block">
-                <span class="text-xs uppercase tracking-[0.25em] text-neutral-300 border border-neutral-700/80 px-4 py-2 backdrop-blur-md bg-black/30 font-sans-clean font-light">Selected Works</span>
-            </div>
-        </div>
+    <!-- Fullscreen Background Photo (IMG_0858 4.jpg) -->
+    <img id="coverImg" src="images/cover.jpg" alt="Cover" class="fixed inset-0 w-full h-full object-cover z-0">
+    
+    <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
+    <div id="bgOverlay" class="fixed inset-0 bg-black/70 z-[5] opacity-0 pointer-events-none"></div>
 
-        <!-- Center Index / Navigation Menu (Inspired by Chen Chuanduan Portfolio) -->
-        <div class="relative z-10 max-w-2xl my-auto py-10">
-            <nav class="flex flex-col space-y-6">
-                <a href="#" onclick="enterGallery('humanities', event)" class="group flex items-center justify-between border-b border-neutral-800/80 pb-4 text-3xl md:text-4xl text-neutral-300 hover:text-white font-light tracking-wider transition-all duration-300">
-                    <span class="group-hover:translate-x-4 transition-transform duration-300">Humanities</span>
-                    <span class="text-xs uppercase tracking-widest text-neutral-500 group-hover:text-neutral-300 font-sans-clean">01 / Series</span>
-                </a>
-                <a href="#" onclick="enterGallery('architecture', event)" class="group flex items-center justify-between border-b border-neutral-800/80 pb-4 text-3xl md:text-4xl text-neutral-300 hover:text-white font-light tracking-wider transition-all duration-300">
-                    <span class="group-hover:translate-x-4 transition-transform duration-300">Architecture</span>
-                    <span class="text-xs uppercase tracking-widest text-neutral-500 group-hover:text-neutral-300 font-sans-clean">02 / Series</span>
-                </a>
-                <a href="#" onclick="enterGallery('nature', event)" class="group flex items-center justify-between border-b border-neutral-800/80 pb-4 text-3xl md:text-4xl text-neutral-300 hover:text-white font-light tracking-wider transition-all duration-300">
-                    <span class="group-hover:translate-x-4 transition-transform duration-300">Nature</span>
-                    <span class="text-xs uppercase tracking-widest text-neutral-500 group-hover:text-neutral-300 font-sans-clean">03 / Series</span>
-                </a>
-                <a href="#" onclick="openAboutModal(event)" class="group flex items-center justify-between pb-2 text-2xl md:text-3xl text-neutral-400 hover:text-white font-light tracking-wider transition-all duration-300 pt-2">
-                    <span class="group-hover:translate-x-4 transition-transform duration-300 italic">About & Contact</span>
-                    <span class="text-xs uppercase tracking-widest text-neutral-500 font-sans-clean">CV</span>
-                </a>
+    <!-- Fixed Left Panel (Cargo.site White Typography Stack) -->
+    <aside class="fixed top-8 left-8 z-30 flex flex-col justify-between h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
+        <!-- Top Left Stack: Brand Title + Menu List -->
+        <div class="space-y-6">
+            <!-- Brand Title -->
+            <div>
+                <a href="#" onclick="showHome(event)" class="cargo-title block hover:opacity-70 transition-opacity">blurry_memo</a>
+            </div>
+
+            <!-- Vertical Navigation Stack (Strict Uniform Font Size 24px & Line Spacing) -->
+            <nav class="flex flex-col space-y-[2px]">
+                <a href="#" onclick="openGallery('all', event)" class="cargo-menu-item nav-link" data-category="all">All Works</a>
+                <a href="#" onclick="openGallery('humanities', event)" class="cargo-menu-item nav-link" data-category="humanities">Humanities</a>
+                <a href="#" onclick="openGallery('architecture', event)" class="cargo-menu-item nav-link" data-category="architecture">Architecture</a>
+                <a href="#" onclick="openAboutModal(event)" class="cargo-menu-item">About me</a>
+                <a href="https://www.xiaohongshu.com" target="_blank" class="cargo-menu-item">Xiaohongshu</a>
+                <a href="#" onclick="openGuestbookModal(event)" class="cargo-menu-item">Guestbook</a>
             </nav>
         </div>
 
-        <!-- Footer / Enter Button -->
-        <div class="relative z-10 flex justify-between items-end pt-6 border-t border-neutral-900/80">
-            <div class="text-xs tracking-widest text-neutral-500 uppercase font-sans-clean font-light">
-                © 2026 blurry_memo
-            </div>
-            <button onclick="enterGallery('all', event)" class="group inline-flex items-center space-x-4 text-lg md:text-xl tracking-widest uppercase text-white hover:text-neutral-300 transition-all duration-300 focus:outline-none bg-neutral-950/60 border border-neutral-800 hover:border-white px-8 py-3 backdrop-blur-md">
-                <span>Enter Gallery</span>
-                <span class="transform group-hover:translate-x-2 transition-transform duration-300 font-sans-clean">→</span>
-            </button>
+        <!-- Bottom Left Copyright Text (Cargo.site Exact White Copy) -->
+        <div class="cargo-copyright">
+            All content copyright the artist. No commercial use without express written permission.
+        </div>
+    </aside>
+
+    <!-- Overlay Gallery Area (Appears cleanly when clicking All Works / Humanities / Architecture) -->
+    <main id="mainContent" class="relative z-10 ml-[320px] min-h-screen px-8 py-8 transition-all duration-500 opacity-0 pointer-events-none">
+        
+        <!-- Gallery Header & Close Button -->
+        <div class="flex justify-between items-center mb-6 pt-2">
+            <h2 id="galleryTitle" class="text-xl font-light tracking-wide text-white drop-shadow">All Works</h2>
+            <button onclick="showHome(event)" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white bg-black/70 backdrop-blur-md px-3.5 py-1.5 border border-white/20">Close Gallery &times;</button>
+        </div>
+
+        <!-- Photo Gallery (Masonry Grid) -->
+        <section id="gallery" class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            <!-- Photos dynamically loaded via JavaScript -->
+        </section>
+
+    </main>
+
+    <!-- Fullscreen Image Lightbox Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100] hidden opacity-0 transition-opacity duration-300 ease-out" onclick="closeModal()">
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="closeModal()">&times;</button>
+        
+        <!-- Navigation Buttons -->
+        <button id="prevBtn" class="absolute left-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="event.stopPropagation(); navigateImage(-1)">&#10094;</button>
+        <button id="nextBtn" class="absolute right-6 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-neutral-400 transition z-[110] focus:outline-none font-light" onclick="event.stopPropagation(); navigateImage(1)">&#10095;</button>
+        
+        <div class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+            <img id="modalImage" src="" alt="Full size" class="max-w-full max-h-full object-contain transform scale-95 transition-all duration-300 ease-out cursor-zoom-in" onclick="event.stopPropagation(); toggleZoom()">
+        </div>
+        <!-- Interaction Hint -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-neutral-400 text-xs uppercase tracking-[0.2em] pointer-events-none font-normal z-[105]">
+            Click / Scroll to Zoom · ESC to Close
         </div>
     </div>
 
-    <!-- Fixed Left Sidebar (Main App) --> 
-    <aside class="w-72 h-screen fixed top-0 left-0 p-10 flex flex-col justify-between border-r border-neutral-900 bg-black z-20"> 
-        <div class="space-y-14"> 
-            <!-- Brand / Logo -> Click returns to Landing Screen --> 
-            <div> 
-                <a href="#" onclick="showLandingScreen(event)" class="text-2xl tracking-widest text-white font-medium italic hover:opacity-80 transition cursor-pointer" title="Return to Cover">blurry_memo</a> 
-            </div> 
-
-            <!-- Categories --> 
-            <div class="space-y-4"> 
-                <nav class="flex flex-col space-y-3.5 text-lg font-normal tracking-wider text-neutral-400"> 
-                    <a href="#" onclick="filterCategory('all', event)" class="hover:text-white transition underline underline-offset-8 text-white nav-link" data-category="all">All</a> 
-                    <a href="#" onclick="filterCategory('humanities', event)" class="hover:text-white transition nav-link" data-category="humanities">Humanities</a> 
-                    <a href="#" onclick="filterCategory('nature', event)" class="hover:text-white transition nav-link" data-category="nature">Nature</a> 
-                    <a href="#" onclick="filterCategory('architecture', event)" class="hover:text-white transition nav-link" data-category="architecture">Architecture</a> 
-                </nav> 
-            </div> 
-        </div> 
-
-        <!-- Navigation Links --> 
-        <div class="space-y-6"> 
-            <nav class="flex flex-col space-y-3.5 text-lg font-normal tracking-wider text-neutral-400"> 
-                <a href="#" onclick="openAboutModal(event)" class="hover:text-white transition">About</a> 
-                <a href="https://www.xiaohongshu.com" target="_blank" class="hover:text-white transition">Xiaohongshu</a> 
-                <a href="#guestbook" class="hover:text-white transition text-neutral-200">Guestbook</a> 
-                <a href="#" onclick="showLandingScreen(event)" class="hover:text-white transition text-neutral-500 text-sm font-sans-clean tracking-widest uppercase pt-2">← Cover Page</a>
-            </nav> 
-        </div> 
-    </aside> 
-
-    <!-- Main Content Area --> 
-    <main class="ml-72 flex-1 h-screen overflow-y-auto no-scrollbar px-14 py-10 space-y-24 scroll-smooth"> 
-         
-        <!-- Photo Gallery (Masonry Grid) --> 
-        <section id="gallery" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8"> 
-             <!-- Photos dynamically loaded via JavaScript -->
-        </section> 
-
-        <!-- Fullscreen Image Modal -->
-        <div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[100] hidden opacity-0 transition-opacity duration-500 ease-out" onclick="closeModal()">
-            <button class="absolute top-6 right-8 text-white text-5xl hover:text-neutral-400 transition z-[110] focus:outline-none p-2 font-light" onclick="closeModal()">&times;</button>
-            
-            <!-- Navigation Buttons -->
-            <button id="prevBtn" class="absolute left-6 top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-neutral-400 transition z-[110] focus:outline-none p-4 font-light" onclick="event.stopPropagation(); navigateImage(-1)">&#10094;</button>
-            <button id="nextBtn" class="absolute right-6 top-1/2 transform -translate-y-1/2 text-white text-6xl hover:text-neutral-400 transition z-[110] focus:outline-none p-4 font-light" onclick="event.stopPropagation(); navigateImage(1)">&#10095;</button>
-            
-            <div class="relative w-full h-screen flex items-center justify-center overflow-hidden">
-                <img id="modalImage" src="" alt="Full size" class="max-w-full max-h-full object-contain transform scale-95 transition-all duration-500 ease-out cursor-zoom-in" onclick="event.stopPropagation(); toggleZoom()">
-            </div>
-            <!-- Interaction Hint -->
-            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-neutral-400 text-sm tracking-widest pointer-events-none font-normal z-[105]">
-                Click or scroll to zoom · Arrow keys to navigate · ESC to close
+    <!-- About me Modal -->
+    <div id="aboutModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[90] hidden items-center justify-center p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeAboutModal()">
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light" onclick="closeAboutModal()">&times;</button>
+        <div class="max-w-md bg-neutral-950 border border-neutral-800 p-8 space-y-4 text-white shadow-2xl" onclick="event.stopPropagation()">
+            <h3 class="cargo-title">About me</h3>
+            <p class="text-sm font-light leading-relaxed text-neutral-300">
+                Photography and visual archive. Capturing space, structure, and human presence.
+            </p>
+            <div class="pt-2 text-xs text-neutral-500 font-normal border-t border-neutral-800">
+                Contact: contact@blurrymemo.com
             </div>
         </div>
+    </div>
 
-        <!-- About Modal -->
-        <div id="aboutModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[90] hidden items-center justify-center p-6 opacity-0 transition-opacity duration-500 ease-out" onclick="closeAboutModal()">
-            <button class="absolute top-8 right-8 text-white text-5xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light" onclick="closeAboutModal()">&times;</button>
-            <div class="max-w-lg text-center space-y-4" onclick="event.stopPropagation()">
-                <h3 class="text-3xl font-medium tracking-widest text-white italic">blurry_memo</h3>
-                <p class="text-neutral-300 text-2xl font-normal leading-relaxed tracking-wide">
-                    Capturing quiet moments through light, shadow, and space.
-                </p>
+    <!-- Guestbook Modal Dialog -->
+    <div id="guestbookModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[90] hidden items-center justify-center p-6 opacity-0 transition-opacity duration-300 ease-out" onclick="closeGuestbookModal()">
+        <button class="absolute top-6 right-6 text-white text-3xl hover:text-neutral-400 transition z-[95] focus:outline-none font-light" onclick="closeGuestbookModal()">&times;</button>
+        <div class="max-w-md w-full bg-neutral-950 border border-neutral-800 p-8 space-y-6 text-white shadow-2xl" onclick="event.stopPropagation()">
+            <div class="space-y-1">
+                <h3 class="text-xl font-normal text-white">Guestbook</h3>
+                <p class="text-xs text-neutral-400 font-light">Leave a message or reach out for inquiries.</p>
             </div>
-        </div>
 
-        <!-- Guestbook Section --> 
-        <section id="guestbook" class="max-w-xl border-t border-neutral-900 pt-20 pb-28 space-y-10"> 
-            <div class="space-y-2"> 
-                <p class="text-sm uppercase tracking-widest text-neutral-400 font-normal">GUESTBOOK</p> 
-                <h2 class="text-3xl font-medium text-white tracking-wide">Leave a Message</h2> 
-            </div> 
+            <!-- Message Form -->
+            <form id="commentForm" class="space-y-3" onsubmit="handleComment(event)">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="author" placeholder="Name *" required class="bg-neutral-900 border border-neutral-800 p-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-white transition font-normal rounded-none">
+                    <input type="email" id="email" placeholder="Email" class="bg-neutral-900 border border-neutral-800 p-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-white transition font-normal rounded-none">
+                </div>
+                <textarea id="content" rows="3" placeholder="Message..." required class="w-full bg-neutral-900 border border-neutral-800 p-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-white transition font-normal rounded-none"></textarea>
+                <button type="submit" class="bg-white text-black px-5 py-2 text-xs uppercase tracking-wider hover:bg-neutral-200 transition font-medium">Send</button>
+            </form>
 
-            <!-- Message Form --> 
-            <form id="commentForm" class="space-y-5" onsubmit="handleComment(event)"> 
-                <div class="grid grid-cols-2 gap-5"> 
-                    <input type="text" id="author" placeholder="Your Name *" required class="bg-neutral-950 border border-neutral-800 p-4 text-base text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition font-normal rounded-none"> 
-                    <input type="email" id="email" placeholder="Email (private)" class="bg-neutral-950 border border-neutral-800 p-4 text-base text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition font-normal rounded-none"> 
-                </div> 
-                <textarea id="content" rows="4" placeholder="Write your message or inquiry..." required class="w-full bg-neutral-950 border border-neutral-800 p-4 text-base text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400 transition font-normal rounded-none"></textarea> 
-                <button type="submit" class="bg-white text-black px-8 py-3 text-base tracking-widest uppercase hover:bg-neutral-200 transition font-medium">Send Message</button> 
-            </form> 
-
-            <!-- Message List --> 
-            <div class="space-y-5 pt-8"> 
-                <p class="text-base uppercase tracking-widest text-neutral-400 font-normal">Recent Messages</p> 
-                <div id="commentsList" class="space-y-4"> 
+            <!-- Message List -->
+            <div class="space-y-3 pt-2 max-h-48 overflow-y-auto no-scrollbar">
+                <div id="commentsList" class="space-y-2">
                     <!-- Comments added dynamically -->
-                </div> 
-            </div> 
-        </section> 
-
-    </main> 
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script> 
+        // Embedded Desktop Photo Library
+        const defaultPhotosData = {
+          "photos": [
+            { "filename": "humanities/P1000773.jpg", "category": "humanities", "title": "Humanities 1" },
+            { "filename": "humanities/P1011308_lab.JPG", "category": "humanities", "title": "Humanities 2" },
+            { "filename": "humanities/P1012376.JPG", "category": "humanities", "title": "Humanities 3" },
+            { "filename": "humanities/P1023070.JPG", "category": "humanities", "title": "Humanities 4" },
+            { "filename": "humanities/P1023138.jpg", "category": "humanities", "title": "Humanities 5" },
+            { "filename": "humanities/P1023198.JPG", "category": "humanities", "title": "Humanities 6" },
+            { "filename": "humanities/P1033950.jpg", "category": "humanities", "title": "Humanities 7" },
+            { "filename": "humanities/P1044592.jpg", "category": "humanities", "title": "Humanities 8" },
+            { "filename": "architecture/P1011740.jpg", "category": "architecture", "title": "Architecture 1" },
+            { "filename": "architecture/P1011741.jpg", "category": "architecture", "title": "Architecture 2" },
+            { "filename": "architecture/P1012040.jpg", "category": "architecture", "title": "Architecture 3" },
+            { "filename": "architecture/P1023389.jpg", "category": "architecture", "title": "Architecture 4" },
+            { "filename": "architecture/P1023448.JPEG", "category": "architecture", "title": "Architecture 5" },
+            { "filename": "architecture/P1033481.jpg", "category": "architecture", "title": "Architecture 6" },
+            { "filename": "architecture/P1033802.JPG", "category": "architecture", "title": "Architecture 7" },
+            { "filename": "architecture/P1034014.jpg", "category": "architecture", "title": "Architecture 8" }
+          ],
+          "categories": {
+            "all": "All Works",
+            "humanities": "Humanities",
+            "architecture": "Architecture"
+          }
+        };
+
         let currentCategory = 'all';
-        let photosData = null;
+        let photosData = defaultPhotosData;
         let isZoomed = false;
         let currentScale = 1;
         let currentImageIndex = 0;
         let currentPhotos = [];
 
-        // Transition logic to enter gallery
-        function enterGallery(category, event) {
+        // Return to clean homepage cover
+        function showHome(event) {
             if (event) event.preventDefault();
-            const landing = document.getElementById('landingScreen');
-            landing.classList.add('opacity-0', 'pointer-events-none', 'scale-105');
+            const mainContent = document.getElementById('mainContent');
+            mainContent.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('gallery-active');
             
-            if (category) {
-                filterCategory(category, event);
-            }
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         }
 
-        // Transition logic to show landing screen
-        function showLandingScreen(event) {
+        // Open gallery content on the right (with background blur & darkening)
+        function openGallery(category, event) {
             if (event) event.preventDefault();
-            const landing = document.getElementById('landingScreen');
-            landing.classList.remove('opacity-0', 'pointer-events-none', 'scale-105');
+            const mainContent = document.getElementById('mainContent');
+            const galleryTitle = document.getElementById('galleryTitle');
+            
+            filterCategory(category, event);
+
+            const titleMap = {
+                'all': 'All Works',
+                'humanities': 'Humanities',
+                'architecture': 'Architecture'
+            };
+            if (galleryTitle) galleryTitle.innerText = titleMap[category] || category;
+
+            document.body.classList.add('gallery-active');
+            mainContent.classList.remove('opacity-0', 'pointer-events-none');
         }
 
         // Load photo settings
         async function loadPhotos() {
             try {
                 const response = await fetch('photos.json');
-                photosData = await response.json();
-                renderGallery(currentCategory);
+                if (response.ok) {
+                    photosData = await response.json();
+                }
             } catch (error) {
-                console.error('Failed to load photos configuration:', error);
+                console.log('Using embedded photo library for local file:// mode.');
             }
+            renderGallery(currentCategory);
         }
 
         // Render gallery
         function renderGallery(category) {
             const gallery = document.getElementById('gallery');
+            if (!gallery || !photosData) return;
             gallery.innerHTML = '';
 
             const filteredPhotos = category === 'all' 
@@ -223,10 +281,10 @@
 
             filteredPhotos.forEach((photo, index) => {
                 const photoCard = document.createElement('div');
-                photoCard.className = 'break-inside-avoid bg-neutral-900 overflow-hidden group cursor-pointer relative';
+                photoCard.className = 'break-inside-avoid bg-black/60 backdrop-blur-md overflow-hidden group cursor-pointer relative border border-white/10 shadow-lg hover:border-white/40 transition-all duration-300';
                 photoCard.innerHTML = `
                     <img src="images/${photo.filename}"  
-                         class="w-full h-auto block transition duration-700 group-hover:scale-105"  
+                         class="w-full h-auto block transition duration-500 hover:scale-[1.02]"  
                          alt="${photo.title}"
                          onclick="openModal('images/${photo.filename}', ${index})">
                 `;
@@ -236,14 +294,13 @@
 
         // Filter category
         function filterCategory(category, event) {
-            if (event) event.preventDefault();
             currentCategory = category;
             
             // Update navigation style
             document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('underline', 'underline-offset-8', 'text-white');
+                link.classList.remove('active');
                 if (link.dataset.category === category) {
-                    link.classList.add('underline', 'underline-offset-8', 'text-white');
+                    link.classList.add('active');
                 }
             });
 
@@ -257,7 +314,7 @@
             
             currentPhotos = currentCategory === 'all' 
                 ? photosData.photos 
-                : photosData.photos.filter(photo => photo.category === currentCategory);
+                : photosData.photos.filter(photo => photo.category === category);
             
             currentImageIndex = index !== undefined ? index : currentPhotos.findIndex(photo => `images/${photo.filename}` === imageSrc);
             
@@ -299,7 +356,7 @@
                 modalImage.src = '';
                 modalImage.style.transform = 'scale(1)';
                 document.body.style.overflow = '';
-            }, 500);
+            }, 300);
         }
 
         // Toggle zoom
@@ -368,7 +425,7 @@
                     modalImage.style.opacity = '1';
                     modalImage.style.transform = 'scale(1)';
                 });
-            }, 250);
+            }, 200);
         }
 
         // Comment handling
@@ -379,13 +436,13 @@
             const date = new Date().toISOString().split('T')[0]; 
 
             const newComment = document.createElement('div'); 
-            newComment.className = 'bg-neutral-950/80 p-5 border border-neutral-900 space-y-2'; 
+            newComment.className = 'bg-neutral-900 p-3 border border-neutral-800 space-y-1'; 
             newComment.innerHTML = ` 
-                <div class="flex justify-between text-xs text-neutral-400 tracking-wider"> 
+                <div class="flex justify-between text-[10px] text-neutral-400 uppercase"> 
                     <span class="text-white font-medium">${author}</span> 
                     <span>${date}</span> 
                 </div> 
-                <p class="text-base text-neutral-300 font-normal leading-relaxed">${content}</p> 
+                <p class="text-xs text-neutral-300 font-light leading-relaxed">${content}</p> 
             `; 
 
             document.getElementById('commentsList').prepend(newComment); 
@@ -397,6 +454,7 @@
             if (e.key === 'Escape') {
                 closeModal();
                 closeAboutModal();
+                closeGuestbookModal();
             } else if (e.key === 'ArrowLeft') {
                 navigateImage(-1);
             } else if (e.key === 'ArrowRight') {
@@ -427,7 +485,33 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.body.style.overflow = '';
-            }, 500);
+            }, 300);
+        }
+
+        // Open Guestbook modal
+        function openGuestbookModal(event) {
+            if (event) event.preventDefault();
+            const modal = document.getElementById('guestbookModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+            });
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close Guestbook modal
+        function closeGuestbookModal() {
+            const modal = document.getElementById('guestbookModal');
+            modal.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300);
         }
 
         // Initialize on DOM ready

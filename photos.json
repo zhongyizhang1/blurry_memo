@@ -3,88 +3,87 @@
     {
       "filename": "humanities/P1000773.jpg",
       "category": "humanities",
-      "title": "Humanities I"
+      "title": "Humanities 1"
     },
     {
       "filename": "humanities/P1011308_lab.JPG",
       "category": "humanities",
-      "title": "Humanities II"
+      "title": "Humanities 2"
     },
     {
       "filename": "humanities/P1012376.JPG",
       "category": "humanities",
-      "title": "Humanities III"
+      "title": "Humanities 3"
     },
     {
       "filename": "humanities/P1023070.JPG",
       "category": "humanities",
-      "title": "Humanities IV"
+      "title": "Humanities 4"
     },
     {
       "filename": "humanities/P1023138.jpg",
       "category": "humanities",
-      "title": "Humanities V"
+      "title": "Humanities 5"
     },
     {
       "filename": "humanities/P1023198.JPG",
       "category": "humanities",
-      "title": "Humanities VI"
+      "title": "Humanities 6"
     },
     {
       "filename": "humanities/P1033950.jpg",
       "category": "humanities",
-      "title": "Humanities VII"
+      "title": "Humanities 7"
     },
     {
       "filename": "humanities/P1044592.jpg",
       "category": "humanities",
-      "title": "Humanities VIII"
+      "title": "Humanities 8"
     },
     {
       "filename": "architecture/P1011740.jpg",
       "category": "architecture",
-      "title": "Architecture I"
+      "title": "Architecture 1"
     },
     {
       "filename": "architecture/P1011741.jpg",
       "category": "architecture",
-      "title": "Architecture II"
+      "title": "Architecture 2"
     },
     {
       "filename": "architecture/P1012040.jpg",
       "category": "architecture",
-      "title": "Architecture III"
+      "title": "Architecture 3"
     },
     {
       "filename": "architecture/P1023389.jpg",
       "category": "architecture",
-      "title": "Architecture IV"
+      "title": "Architecture 4"
     },
     {
       "filename": "architecture/P1023448.JPEG",
       "category": "architecture",
-      "title": "Architecture V"
+      "title": "Architecture 5"
     },
     {
       "filename": "architecture/P1033481.jpg",
       "category": "architecture",
-      "title": "Architecture VI"
+      "title": "Architecture 6"
     },
     {
       "filename": "architecture/P1033802.JPG",
       "category": "architecture",
-      "title": "Architecture VII"
+      "title": "Architecture 7"
     },
     {
       "filename": "architecture/P1034014.jpg",
       "category": "architecture",
-      "title": "Architecture VIII"
+      "title": "Architecture 8"
     }
   ],
   "categories": {
     "all": "All",
-    "architecture": "Architecture",
     "humanities": "Humanities",
-    "nature": "Nature"
+    "architecture": "Architecture"
   }
 }
