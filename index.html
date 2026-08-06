@@ -44,7 +44,7 @@
             }
         }
 
-        /* Bold White Sidebar Menu Items - Identical Line Spacing & Font Stack across Mobile & Desktop */
+        /* Bold White Sidebar Menu Items */
         .cargo-menu-item {
             font-size: 22px !important;
             font-weight: 600 !important;
@@ -98,6 +98,9 @@
         #bgOverlay {
             transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
         }
+        aside {
+            transition: opacity 0.3s ease;
+        }
 
         /* Gallery Active State: Soft Frosted Dark Blur */
         body.gallery-active #coverImgDesktop,
@@ -108,6 +111,14 @@
         body.gallery-active #bgOverlay {
             opacity: 0.5;
             backdrop-filter: blur(12px);
+        }
+
+        /* Mobile Gallery Active: Fade out left menu on mobile so text doesn't overlap gallery */
+        @media (max-width: 767px) {
+            body.gallery-active aside {
+                opacity: 0;
+                pointer-events: none;
+            }
         }
     </style> 
 </head> 
@@ -127,8 +138,8 @@
 
     <!-- Top-Left Fixed Panel (Identical Cargo.site Typography Stack on Mobile & Desktop) -->
     <aside class="fixed top-6 left-6 md:top-8 md:left-8 z-30 flex flex-col justify-between h-[calc(100vh-48px)] md:h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
-        <!-- Top Left Stack: Brand Title + Menu List -->
-        <div class="space-y-5 md:space-y-6">
+        <!-- Top Left Stack: Brand Title + Menu List (Slightly increased gap between title & menu) -->
+        <div class="space-y-8 md:space-y-10">
             <!-- Brand Title -->
             <div>
                 <a href="#" onclick="showHome(event)" class="cargo-title block hover:opacity-70 transition-opacity">blurry_memo</a>
@@ -152,12 +163,12 @@
     </aside>
 
     <!-- Overlay Gallery Area (Appears cleanly when clicking any category) -->
-    <main id="mainContent" class="relative z-10 ml-0 md:ml-[320px] min-h-screen px-4 md:px-8 pt-24 md:pt-8 pb-12 transition-all duration-500 opacity-0 pointer-events-none">
+    <main id="mainContent" class="relative z-10 ml-0 md:ml-[320px] min-h-screen px-4 md:px-8 pt-8 pb-12 transition-all duration-500 opacity-0 pointer-events-none">
         
         <!-- Gallery Header & Close Button -->
         <div class="flex justify-between items-center mb-6 pt-2">
-            <h2 id="galleryTitle" class="text-lg md:text-xl font-light tracking-wide text-white drop-shadow">All Works</h2>
-            <button onclick="showHome(event)" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white bg-black/70 backdrop-blur-md px-3.5 py-1.5 border border-white/20">Close Gallery &times;</button>
+            <h2 id="galleryTitle" class="text-lg md:text-xl font-light tracking-wide text-white drop-shadow hidden md:block">All Works</h2>
+            <button onclick="showHome(event)" class="text-xs uppercase tracking-widest text-neutral-300 hover:text-white bg-black/70 backdrop-blur-md px-4 py-2 border border-white/20 ml-auto">Close Gallery &times;</button>
         </div>
 
         <!-- Photo Gallery (Responsive Grid: 1 col on mobile, 2 col on tablet, 3 col on desktop) -->
