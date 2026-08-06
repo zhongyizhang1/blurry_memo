@@ -31,7 +31,7 @@
         
         /* Bold White Title */
         .cargo-title {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1.05;
@@ -44,7 +44,7 @@
             }
         }
 
-        /* Bold White Sidebar Menu Items */
+        /* Bold White Sidebar Menu Items - Identical Line Spacing & Font Stack across Mobile & Desktop */
         .cargo-menu-item {
             font-size: 22px !important;
             font-weight: 600 !important;
@@ -125,47 +125,16 @@
     <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
     <div id="bgOverlay" class="fixed inset-0 bg-black/50 z-[5] opacity-0 pointer-events-none"></div>
 
-    <!-- 1. Fully Transparent Mobile Top Navigation Bar (Only visible on mobile screens < md) -->
-    <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-transparent px-5 py-4 flex justify-between items-center border-none pointer-events-auto">
-        <a href="#" onclick="showHome(event)" class="cargo-title text-2xl font-bold tracking-tight text-white drop-shadow">blurry_memo</a>
-        <button onclick="toggleMobileMenu(event)" class="text-white p-1 focus:outline-none" aria-label="Toggle Menu">
-            <svg class="w-7 h-7 drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </header>
-
-    <!-- 2. Mobile Fullscreen Slide-out Menu Overlay (Only visible on mobile screens < md) -->
-    <div id="mobileMenuOverlay" class="md:hidden fixed inset-0 bg-black/95 backdrop-blur-2xl z-50 hidden flex-col justify-between p-8 pointer-events-auto transition-opacity duration-300">
-        <div class="flex justify-between items-center pb-6 border-b border-white/10">
-            <a href="#" onclick="showHome(event); toggleMobileMenu(event);" class="cargo-title text-2xl font-bold">blurry_memo</a>
-            <button onclick="toggleMobileMenu(event)" class="text-white text-3xl font-light focus:outline-none p-1">&times;</button>
-        </div>
-
-        <nav class="flex flex-col space-y-4 my-auto py-8">
-            <a href="#" onclick="selectMobileCategory('all', event)" class="cargo-menu-item text-2xl font-semibold">All Works</a>
-            <a href="#" onclick="selectMobileCategory('humanities', event)" class="cargo-menu-item text-2xl font-semibold">Humanities</a>
-            <a href="#" onclick="selectMobileCategory('architecture', event)" class="cargo-menu-item text-2xl font-semibold">Architecture</a>
-            <a href="#" onclick="selectMobileCategory('nature', event)" class="cargo-menu-item text-2xl font-semibold">Nature</a>
-            <a href="#" onclick="selectMobileAbout(event)" class="cargo-menu-item text-2xl font-semibold">About me</a>
-            <a href="#" onclick="selectMobileGuestbook(event)" class="cargo-menu-item text-2xl font-semibold">Guestbook</a>
-        </nav>
-
-        <div class="cargo-copyright pt-6 border-t border-white/10 text-xs">
-            All content copyright the artist. No commercial use without express written permission.
-        </div>
-    </div>
-
-    <!-- 3. Desktop Fixed Left Panel (Only visible on desktop screens >= md) -->
-    <aside class="hidden md:flex fixed top-8 left-8 z-30 flex-col justify-between h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
+    <!-- Top-Left Fixed Panel (Identical Cargo.site Typography Stack on Mobile & Desktop) -->
+    <aside class="fixed top-6 left-6 md:top-8 md:left-8 z-30 flex flex-col justify-between h-[calc(100vh-48px)] md:h-[calc(100vh-64px)] pointer-events-auto max-w-[280px]">
         <!-- Top Left Stack: Brand Title + Menu List -->
-        <div class="space-y-6">
+        <div class="space-y-5 md:space-y-6">
             <!-- Brand Title -->
             <div>
                 <a href="#" onclick="showHome(event)" class="cargo-title block hover:opacity-70 transition-opacity">blurry_memo</a>
             </div>
 
-            <!-- Vertical Navigation Stack -->
+            <!-- Vertical Navigation Stack (Identical Line Spacing space-y-[2px] across Mobile & Desktop) -->
             <nav class="flex flex-col space-y-[2px]">
                 <a href="#" onclick="openGallery('all', event)" class="cargo-menu-item nav-link" data-category="all">All Works</a>
                 <a href="#" onclick="openGallery('humanities', event)" class="cargo-menu-item nav-link" data-category="humanities">Humanities</a>
@@ -182,8 +151,8 @@
         </div>
     </aside>
 
-    <!-- 4. Overlay Gallery Area (Responsive: full width on mobile, offset on desktop) -->
-    <main id="mainContent" class="relative z-10 ml-0 md:ml-[320px] min-h-screen px-4 md:px-8 pt-20 md:pt-8 pb-12 transition-all duration-500 opacity-0 pointer-events-none">
+    <!-- Overlay Gallery Area (Appears cleanly when clicking any category) -->
+    <main id="mainContent" class="relative z-10 ml-0 md:ml-[320px] min-h-screen px-4 md:px-8 pt-24 md:pt-8 pb-12 transition-all duration-500 opacity-0 pointer-events-none">
         
         <!-- Gallery Header & Close Button -->
         <div class="flex justify-between items-center mb-6 pt-2">
@@ -292,34 +261,6 @@
         let currentScale = 1;
         let currentImageIndex = 0;
         let currentPhotos = [];
-
-        // Mobile menu toggle
-        function toggleMobileMenu(event) {
-            if (event) event.preventDefault();
-            const menu = document.getElementById('mobileMenuOverlay');
-            if (menu) {
-                menu.classList.toggle('hidden');
-                menu.classList.toggle('flex');
-            }
-        }
-
-        function selectMobileCategory(category, event) {
-            if (event) event.preventDefault();
-            toggleMobileMenu();
-            openGallery(category, event);
-        }
-
-        function selectMobileAbout(event) {
-            if (event) event.preventDefault();
-            toggleMobileMenu();
-            openAboutModal(event);
-        }
-
-        function selectMobileGuestbook(event) {
-            if (event) event.preventDefault();
-            toggleMobileMenu();
-            openGuestbookModal(event);
-        }
 
         // Return to clean homepage cover
         function showHome(event) {
@@ -530,7 +471,7 @@
                     modalImage.style.opacity = '1';
                     modalImage.style.transform = 'scale(1)';
                 });
-            }, 250);
+            }, 200);
         }
 
         // Comment handling
