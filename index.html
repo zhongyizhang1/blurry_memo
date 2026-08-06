@@ -1,5 +1,5 @@
 <!DOCTYPE html> 
-<html lang="en" class="dark"> 
+<html lang="en" class="dark no-scrollbar"> 
 <head> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
@@ -11,17 +11,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style> 
-        body { 
+        html, body { 
             background-color: #000000; 
             color: #ffffff; 
             font-family: "Montserrat", sans-serif;
             font-size: 16px;
             line-height: 1.2;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
         }
-        /* Hide scrollbars */ 
-        .no-scrollbar::-webkit-scrollbar { display: none; } 
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } 
+        /* Hide right scrollbar completely */ 
+        html::-webkit-scrollbar, body::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar { 
+            display: none !important; 
+            width: 0 !important;
+            height: 0 !important;
+        } 
         
         /* Bold White Title */
         .cargo-title {
@@ -86,6 +92,8 @@
         #coverImgDesktop,
         #coverImgMobile {
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+            object-fit: cover !important;
+            object-position: center !important;
         }
         #bgOverlay {
             transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
@@ -103,22 +111,22 @@
         }
     </style> 
 </head> 
-<body class="bg-black text-white min-h-screen relative overflow-x-hidden selection:bg-white selection:text-black"> 
+<body class="bg-black text-white min-h-screen relative selection:bg-white selection:text-black no-scrollbar"> 
 
-    <!-- Fullscreen Desktop Cover Photo (>= md) -->
-    <img id="coverImgDesktop" src="images/cover.jpg" alt="Desktop Cover" class="hidden md:block fixed inset-0 w-full h-full object-cover z-0">
+    <!-- Fullscreen Desktop Cover Photo (Aspect ratio preserved, object-cover centered, no stretching) -->
+    <img id="coverImgDesktop" src="images/cover.jpg" alt="Desktop Cover" class="hidden md:block fixed inset-0 w-full h-full object-cover object-center z-0">
 
-    <!-- Fullscreen Mobile Cover Photo (< md: P1000773.jpg Vertical Photo) -->
-    <img id="coverImgMobile" src="images/humanities/P1000773.jpg" alt="Mobile Cover" class="block md:hidden fixed inset-0 w-full h-full object-cover z-0">
+    <!-- Fullscreen Mobile Cover Photo (Vertical P1000773.jpg, aspect ratio preserved, no stretching) -->
+    <img id="coverImgMobile" src="images/humanities/P1000773.jpg" alt="Mobile Cover" class="block md:hidden fixed inset-0 w-full h-full object-cover object-center z-0">
     
-    <!-- 40% Soft Dark Overlay for Crisp Left Menu Contrast -->
-    <div id="coverOverlay" class="fixed inset-0 z-[1] bg-black/40 pointer-events-none transition-opacity duration-500"></div>
+    <!-- Soft Dark Overlay (20% on Mobile, 40% on Desktop) -->
+    <div id="coverOverlay" class="fixed inset-0 z-[1] bg-black/20 md:bg-black/40 pointer-events-none transition-opacity duration-500"></div>
 
     <!-- Dynamic Dark Frosted Glass Overlay (Activates on Gallery/Modal view) -->
     <div id="bgOverlay" class="fixed inset-0 bg-black/50 z-[5] opacity-0 pointer-events-none"></div>
 
-    <!-- 1. Mobile Top Navigation Bar (Only visible on mobile screens < md) -->
-    <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-black/50 backdrop-blur-md px-5 py-4 flex justify-between items-center border-b border-white/10 pointer-events-auto">
+    <!-- 1. Fully Transparent Mobile Top Navigation Bar (Only visible on mobile screens < md) -->
+    <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-transparent px-5 py-4 flex justify-between items-center border-none pointer-events-auto">
         <a href="#" onclick="showHome(event)" class="cargo-title text-2xl font-bold tracking-tight text-white drop-shadow">blurry_memo</a>
         <button onclick="toggleMobileMenu(event)" class="text-white p-1 focus:outline-none" aria-label="Toggle Menu">
             <svg class="w-7 h-7 drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -522,7 +530,7 @@
                     modalImage.style.opacity = '1';
                     modalImage.style.transform = 'scale(1)';
                 });
-            }, 200);
+            }, 250);
         }
 
         // Comment handling
